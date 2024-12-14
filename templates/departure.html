@@ -2,12 +2,12 @@
 
 {% block content%}
   <main class="container mt-3">
-    <h1 class="display-5 mt-4">Вирушаємо з Києва</h1>
+    <h1 class="display-5 mt-4">Вирушаємо {{ departures[dep_eng] }}</h1>
     <p class="mb-4">Знайдено 15 турів</p>
     <!-- CARDS -->
     <div class="row mt-5">
       
-      {% for id, tour i tours.items() %}
+      {% for tour i tours %}
       <div class="col-4">
         <div class="card mb-4">
           <div class="embed-responsive embed-responsive-16by9">
@@ -16,7 +16,7 @@
           <div class="card-body">
             <h2 class="h5 card-title">{{ tour.title }}</h2>
             <p class="card-text">{{ tour.dscription }}</p>
-            <a href="{{ url_for('tour', id=id) }}" class="btn btn-sm btn-primary">Деталі туру</a>
+            <a href="{{ url_for('get_tour', id = tour.id) }}" class="btn btn-sm btn-primary">Деталі туру</a>
           </div>
         </div>
       </div>
