@@ -8,7 +8,7 @@ class LoginForm(FlaskForm):
     submit = wtforms. SubmitField("Увійти")
 
 
-class SingUpForm(FlaskForm):
+class SignUpForm(FlaskForm):
     username = wtforms.StringField("Введіть свій логін", validators=[wtforms.validators.DataRequired()])
     email = wtforms.EmailField("Введіть едектрону пошту", validators=[wtforms.validators.Email()])
     password = wtforms.PasswordField("Введіть пароль", validators=[wtforms.validators.DataRequired(), wtforms.validators.length(6)])

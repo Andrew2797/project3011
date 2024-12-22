@@ -26,7 +26,7 @@ tour_user_assoc = Table(
     "tour_user_assoc",
     Base.metadata,
     Column("tour_id", ForeignKey("tours.id"), primarry_key=True),
-    Column("user_id", ForeignKey("user.id"), primarry_key=True )
+    Column("user_id", ForeignKey("users.id"), primarry_key=True )
 )
 
 
@@ -34,7 +34,7 @@ class User(Base, UserMixin):
     __tablename__="users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(100))
-    email: Mapped[str] = mapped_column(String(100))
-    password: Mapped[str] = mapped_column(String(500))
+    username: Mapped[str] = mapped_column(String(100), unique_key=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True)
+    password: Mapped[str] = mapped_column(String(500), unique=True)
     tours: Mapped[List[Tour]] = relationship(secondary=tour_user_assoc)

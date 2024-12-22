@@ -10,7 +10,7 @@ from data import data
 from data.base import create_db
 from data.base import Session
 from data.models import Tour, User
-from data.forms import  LoginForm, SingUpForm
+from data.forms import  LoginForm, SignUpForm
 
 
 app = Flask(__name__)
@@ -64,14 +64,15 @@ def departure(dep_eng):
         return render_template("departure.html", tours=tours, dep_eng=dep_eng)
 
 
-@app.post("/tour/reserve/<int:id>")
-def reserve(id):
+@app.post("/tour/reserve/<int:tour_id>")
+@login_required
+def reserve(tour_id):
     with Session() as session:
-        #name = request.form.get("name")
-        #reserve_tour = Reserve(name=name, tour_id=id)
-        #session.add(reserve_tour)
-        #session.commit()
-        return redirect(url_for("index"))
+        tour = session.query(Tour).where(Tour.id == tour_id).first()
+        user = session.query(User).where(User.id == current_user.id).first()
+        user.tours.append(tour)
+        session.commit()
+        return redirect(url_for("account"))
 
 
 @app.route("/login/", methods=["GET", "POST"])
@@ -84,17 +85,52 @@ def login():
         
         with Session() as session:
             user = session.query(User).where(or_(User.username == username, User.email == username)).first()
-            if not user:
-                flash("Такого користувача не існуєю. Зареєструйтесь")
-                return redirect(url_for("singup"))
+            if not user or not check_password_hash(user.password, password):
+                flash("Логін або пароль невірний.")
+                return redirect(url_for("signup"))
             
-            if check_password_hash(user.password, password):
                 login_user(user)
                 return redirect(url_for("acount"))
-            
-            flash("Пароль не вірний.")
 
     return render_template("login.html", form=login_form)
+
+
+@app.route("/signup/", methods=["GET", "POST"])
+def signup():
+    signup_form = SignUpForm
+    
+    if signup_form.validate_on_submit():
+        username = signup_form.username.data
+        email = signup_form.email.data
+        password = signup_form.password.data
+
+        with Session() as session:
+            user=session.query(User).where(or_(User.email, User.username == username)).first()
+            if user:
+                flash("Такий користувач вже зареєстрований. Увійдіть до системи")
+                return redirect(url_for("login"))
+            user = User(
+                username=username,
+                email=email,
+                password=generate_password_hash(password)
+            )
+            session.add(user)
+            session.commit()
+            return redirect(url_for("login"))
+
+
+@app.get("/account/")
+@login_required
+def account():
+    return render_template("account.html")
+
+
+@app.get("/logout/")
+@login_required
+def logout():
+    logout_user()
+    flash("Ви успішно вийшли із системи")
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
