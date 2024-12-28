@@ -7,24 +7,12 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           
-            {% for dep_eng, dep_ukr in departures.items() %}
-            <li class="nav-item active">
-            <a class="nav-link" href="#">З Києва</a>
+          {% for dep_eng, dep_ukr in departures.items() %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('departure', dep_eng=dep_eng) }}">{{ dep_ukr}}</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Зі Львова</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">З Чернівець</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">З Чернігова</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">З Одеси</a>
-          </li>
-        {% endfor %}
-        
+          {% endfor %}
+
         </ul>
       </div>
     </nav>

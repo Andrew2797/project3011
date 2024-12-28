@@ -22,9 +22,9 @@ login_manager.init_app(app)
 
 
 @login_manager.user_loader
-def get_user():
+def get_user(user_id):
     with Session() as session:
-        return session.query(User).where(User,id == id)
+        return session.query(User).where(User.id == user_id).first()
 
 
 
@@ -37,8 +37,9 @@ def global_data():
         else:
             user_tours = []
 
-    return dict(
-        departures=data.departures
+        return dict(
+        departures=data.departures,
+        user_tours=user_tours
     )
 
 
@@ -89,15 +90,15 @@ def login():
                 flash("Логін або пароль невірний.")
                 return redirect(url_for("signup"))
             
-                login_user(user)
-                return redirect(url_for("acount"))
+            login_user(user)
+            return redirect(url_for("acount"))
 
     return render_template("login.html", form=login_form)
 
 
 @app.route("/signup/", methods=["GET", "POST"])
 def signup():
-    signup_form = SignUpForm
+    signup_form = SignUpForm()
     
     if signup_form.validate_on_submit():
         username = signup_form.username.data
@@ -105,7 +106,7 @@ def signup():
         password = signup_form.password.data
 
         with Session() as session:
-            user=session.query(User).where(or_(User.email, User.username == username)).first()
+            user=session.query(User).where(or_(User.email == username, User.username == username)).first()
             if user:
                 flash("Такий користувач вже зареєстрований. Увійдіть до системи")
                 return redirect(url_for("login"))
@@ -118,6 +119,8 @@ def signup():
             session.commit()
             return redirect(url_for("login"))
 
+
+    return render_template("signup.html", form=signup_form)
 
 @app.get("/account/")
 @login_required

@@ -2,10 +2,10 @@
 
 {% block center %}
 <form action="{{ url_for('login') }}" method="post">
-    {{form. hidden_tag}}
+    {{form. hidden_tag() }}
     
     <div class="form-group">
-        {{ form.username.labe(class="form-control") }}
+        {{ form.username.label(class="form-label") }}
         {{ form.username(class="form-control") }}
     
     {% for erorr in form. username.errors %}
@@ -18,12 +18,6 @@
     <div class="form-control">
         {{ form.password.label(class="form-label") }}
         {{ form.password(class="form-control") }}        
-    
-        {% for erorr in form.password.errors %}
-        <div class="field_eror">
-            {{ erorr }}
-        </div>
-    {% endfor %}
     
     </div>
     {{form.submit(class="btn btn-primary") }}
