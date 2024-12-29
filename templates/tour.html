@@ -9,7 +9,7 @@
       <img src="{{ tour.picture }}" class="w-75">
       <p class="my-4 w-75">{{ tour.description }}</p>
 
-      <a href="{{ url_for('reserve', id=tour.id) }}" class="btn btn-success btn-lg">Купити тур за {{ tour.price }} грн</a>
+      <a href="{{ url_for('reserve', tour_id=tour.id) }}" class="btn btn-success btn-lg">Купити тур за {{ tour.price }} грн</a>
 
     </section>
   </main>

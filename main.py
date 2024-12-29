@@ -53,7 +53,7 @@ def index():
 @app.get("/tour/<int:id>")
 def get_tour(id):
     with Session() as session:
-        tour = session.query(Tour).where(Tour, id == id).first()
+        tour = session.query(Tour).where(Tour.id == id).first()
         return render_template("tour.html", tour=tour)
 
 
@@ -91,7 +91,7 @@ def login():
                 return redirect(url_for("signup"))
             
             login_user(user)
-            return redirect(url_for("acount"))
+            return redirect(url_for("account"))
 
     return render_template("login.html", form=login_form)
 
