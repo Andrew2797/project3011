@@ -137,6 +137,16 @@ def logout():
     return redirect(url_for("index"))
 
 
+@app.get("/reserve/<int:tour_id>/")
+@login_required
+def reserve(tour_id: int):
+    tour = db.session.query(Tour).where(Tour.id == tour_id).first()
+    user = db.session.query(User).where(User.id == current_user).first()
+    user.tours.append(tour)
+    db.session.comit()
+    flash("Тур успішно заброньовано")
+    return redirect(url_for("cabinet"))
+
 if __name__ == "__main__":
     create_db()
     #write_data_to_db()
