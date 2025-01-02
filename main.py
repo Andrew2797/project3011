@@ -38,9 +38,10 @@ def global_data():
             user_tours = []
 
         return dict(
-        departures=data.departures,
-        user_tours=user_tours
-    )
+    departures=data.departures,
+    user_tours=user_tours
+)
+
 
 
 @app.get("/")
@@ -69,7 +70,7 @@ def departure(dep_eng):
 @login_required
 def reserve(tour_id):
     with Session() as session:
-        tour = session.query(Tour).where(Tour.id == tour_id).first()
+        tour = session.query(Tour).where(Tour.id == tour_id.id).first()
         user = session.query(User).where(User.id == current_user.id).first()
         user.tours.append(tour)
         session.commit()
