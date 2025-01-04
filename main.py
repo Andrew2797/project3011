@@ -38,10 +38,9 @@ def global_data():
             user_tours = []
 
         return dict(
-    departures=data.departures,
-    user_tours=user_tours
-)
-
+        departures=data.departures,
+        user_tours=user_tours
+    )
 
 
 @app.get("/")
@@ -65,16 +64,6 @@ def departure(dep_eng):
 
         return render_template("departure.html", tours=tours, dep_eng=dep_eng)
 
-
-@app.post("/tour/reserve/<int:tour_id>")
-@login_required
-def reserve(tour_id):
-    with Session() as session:
-        tour = session.query(Tour).where(Tour.id == tour_id.id).first()
-        user = session.query(User).where(User.id == current_user.id).first()
-        user.tours.append(tour)
-        session.commit()
-        return redirect(url_for("account"))
 
 
 @app.route("/login/", methods=["GET", "POST"])
@@ -140,14 +129,16 @@ def logout():
 @app.get("/reserve/<int:tour_id>/")
 @login_required
 def reserve(tour_id: int):
-    tour = db.session.query(Tour).where(Tour.id == tour_id).first()
-    user = db.session.query(User).where(User.id == current_user).first()
-    user.tours.append(tour)
-    db.session.comit()
-    flash("Тур успішно заброньовано")
-    return redirect(url_for("cabinet"))
+    with Session() as session:
+        tour = session.query(Tour).where(Tour.id == tour_id).first()
+        user = session.query(User).where(User.id == current_user.id).first()
+        user.tours.append(tour)
+        session.commit()
+        flash("Тур успішно заброньовано")
+        return redirect(url_for("account"))
+    
+
 
 if __name__ == "__main__":
     create_db()
-    #write_data_to_db()
     app.run(debug=True)
